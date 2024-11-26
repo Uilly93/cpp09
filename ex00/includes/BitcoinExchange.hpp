@@ -7,31 +7,33 @@
 #include <vector>
 
 struct Date {
-	unsigned int year;
-	unsigned int month;
-	unsigned int day;
+	int year;
+	int month;
+	int day;
 };
 
-struct Format {
-	std::map<Date, double> map;
-};
+void fill_map(std::map<Date, double> &map, std::string path);
 
-class Bitcoin {
-	public:
-	// Constructor
-	Bitcoin();
-	// Bitcoin(parametric constructor);
-	// Bitcoin(const Bitcoin &src);
+// struct Format {
+// 	std::map<Date, double> map;
+// };
 
-	// Destructor
-	~Bitcoin();
+// class Bitcoin {
+// 	public:
+// 	// Constructor
+// 	Bitcoin();
+// 	// Bitcoin(parametric constructor);
+// 	// Bitcoin(const Bitcoin &src);
 
-	// Operator Overload
-	// Bitcoin &operator=(const Bitcoin &src);
+// 	// Destructor
+// 	~Bitcoin();
 
-	// Methods
-	private:
-	std::map<Date, double> map;
-};
+// 	// Operator Overload
+// 	// Bitcoin &operator=(const Bitcoin &src);
+
+// 	// Methods
+// 	private:
+// 	std::map<Date, double> map;
+// };
 
 #endif
