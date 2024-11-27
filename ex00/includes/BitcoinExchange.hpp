@@ -4,36 +4,22 @@
 #include "colors.hpp"
 #include <iostream>
 #include <map>
+#include <ostream>
 #include <vector>
 
-struct Date {
+class Date {
+	public:
 	int year;
 	int month;
 	int day;
+	Date();
+	Date(const std::string &dateStr);
+	~Date();
+	bool operator<(const Date &other) const;
 };
 
-void fill_map(std::map<Date, double> &map, std::string &path);
+std::ostream &operator<<(std::ostream &os, const Date &date);
 
-// struct Format {
-// 	std::map<Date, double> map;
-// };
-
-// class Bitcoin {
-// 	public:
-// 	// Constructor
-// 	Bitcoin();
-// 	// Bitcoin(parametric constructor);
-// 	// Bitcoin(const Bitcoin &src);
-
-// 	// Destructor
-// 	~Bitcoin();
-
-// 	// Operator Overload
-// 	// Bitcoin &operator=(const Bitcoin &src);
-
-// 	// Methods
-// 	private:
-// 	std::map<Date, double> map;
-// };
+std::map<Date, float> fill_data_base(std::string &path);
 
 #endif

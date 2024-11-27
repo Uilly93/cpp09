@@ -12,58 +12,59 @@
 // bool check_format(std::string &str) {
 
 // }
-
-Date convert_date(std::string &str) {
-	if (str.empty())
-		throw std::invalid_argument("invalide date format");
-	int first_dash = str.find('-');
-	int second_dash = str.find_last_of('-');
-	std::string y_str = str.substr(0, first_dash);
-	std::string m_str = str.substr(first_dash + 1, second_dash - first_dash - 1);
-	std::string d_str = str.substr(second_dash + 1);
-	// std::cout << y_str << " " << m_str << " " << d_str << RESET << std::endl;
-	Date date;
-	date.year = std::atoi(y_str.c_str());
-	date.month = std::atoi(m_str.c_str());
-	date.day = std::atoi(d_str.c_str());
-	return date;
+Date::Date() : year(0), month(0), day(0) {
 }
 
-// bool check_line(std::string line){
+Date::Date(const std::string &dateStr) {
+	if (dateStr.size() != 10 || dateStr[4] != '-' || dateStr[7] != '-') {
+		std::string err = dateStr + ": invalid date format";
+		throw std::invalid_argument(err);
+	}
+	int first_dash = dateStr.find('-');
+	int second_dash = dateStr.rfind('-');
+	std::string y_str = dateStr.substr(0, first_dash);
+	std::string m_str = dateStr.substr(first_dash + 1, second_dash - first_dash - 1);
+	std::string d_str = dateStr.substr(second_dash + 1);
+	year = std::atoi(y_str.c_str());
+	month = std::atoi(m_str.c_str());
+	day = std::atoi(d_str.c_str());
+}
 
-// }
+Date::~Date(){};
 
-void fill_map(std::map<Date, double> &map, std::string &path) {
-	// (void)date;
-	(void)map;
-	// int i = 0;
-	std::ifstream file(path);
+bool Date::operator<(const Date &other) const {
+	if (year != other.year)
+		return year < other.year;
+	if (month != other.month)
+		return month < other.month;
+	return day < other.day;
+}
+
+std::ostream &operator<<(std::ostream &os, const Date &date) {
+	os << date.year << " " << date.month << " " << date.day;
+	return os;
+}
+
+std::map<Date, float> fill_data_base(std::string &path) {
+	std::ifstream file(path.c_str());
 	if (!file.is_open())
 		throw std::invalid_argument("invalid file");
-
+	std::map<Date, float> map;
 	for (std::string line; std::getline(file, line);) {
 		while (line == "date,exchange_rate" || line.empty()) {
 			std::getline(file, line);
 		}
 		std::size_t pos = line.find(',');
-		if (pos == std::string::npos)
-			throw std::invalid_argument("invalid line format");
+		if (pos == std::string::npos){
+			std::string err = line + ": invalid line format";
+			throw std::invalid_argument(err);
+		}
 		std::string str_date = line.substr(0, line.find(','));
 		std::string num = line.substr(line.find(',') + 1);
-		Date date = convert_date(str_date);
-		double value = std::atof(num.c_str());
-		std::cout << date.year << " " << date.month << " " << date.day << " " << value << RESET << std::endl;
-
-		// map[date] = value;
-		// std::map<Date, double>::iterator it = map.begin();
-		// it->first.
-		// std::cout << map[] << "message" << RESET << std::endl;
-		// Date date;
-		// date.year =
-		// date.month =
-		// date.day =
-		// if (num == "")
-		// std::cout << date << "   " << value << std::endl;
+		Date date(str_date);
+		float value = std::strtold(num.c_str(), NULL);
+		map[date] = value;
 	}
 	file.close();
+	return map;
 }

@@ -1,13 +1,23 @@
 #include "../includes/BitcoinExchange.hpp"
 #include <cstddef>
+#include <exception>
+#include <iomanip>
+#include <ios>
 #include <map>
 
-int main(int ac, char**av){
-	if (ac != 2)
-		return 1;
-	Date date;
-	(void)date;
-	std::map<Date, double> map;
-	std::string path(av[1]);
-	fill_map(map, path);
+int main(int ac, char **av) {
+	// if (ac != 2)
+	// 	return 1;
+	(void)ac;
+	(void)av;
+	std::string path("data.csv");
+	try {
+		std::map<Date, float> data_base = fill_data_base(path);
+		for (std::map<Date, float>::iterator it = data_base.begin(); it != data_base.end(); it++)
+			std::cout << it->first << " " << it->second << RESET << std::endl;
+	} catch (std::exception &e) {
+		std::cout << e.what() << std::endl;
+	}
+	// std::cout << it->first.year << " " << it->first.month << " " << it->first.day << " "
+	// 		  << it->second << RESET << std::endl;
 }
