@@ -8,6 +8,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <map>
 
 // bool check_format(std::string &str) {
 
@@ -55,7 +56,7 @@ std::map<Date, float> fill_data_base(std::string &path) {
 			std::getline(file, line);
 		}
 		std::size_t pos = line.find(',');
-		if (pos == std::string::npos){
+		if (pos == std::string::npos) {
 			std::string err = line + ": invalid line format";
 			throw std::invalid_argument(err);
 		}
