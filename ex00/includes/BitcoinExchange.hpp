@@ -12,7 +12,7 @@ struct Date {
 	int day;
 };
 
-void fill_map(std::map<Date, double> &map, std::string path);
+void fill_map(std::map<Date, double> &map, std::string &path);
 
 // struct Format {
 // 	std::map<Date, double> map;

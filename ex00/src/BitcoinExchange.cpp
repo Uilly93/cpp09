@@ -9,7 +9,11 @@
 #include <stdexcept>
 #include <string>
 
-Date convert_date(std::string str) {
+// bool check_format(std::string &str) {
+
+// }
+
+Date convert_date(std::string &str) {
 	if (str.empty())
 		throw std::invalid_argument("invalide date format");
 	int first_dash = str.find('-');
@@ -50,7 +54,7 @@ void fill_map(std::map<Date, double> &map, std::string &path) {
 		double value = std::atof(num.c_str());
 		std::cout << date.year << " " << date.month << " " << date.day << " " << value << RESET << std::endl;
 
-		map[date] = value;
+		// map[date] = value;
 		// std::map<Date, double>::iterator it = map.begin();
 		// it->first.
 		// std::cout << map[] << "message" << RESET << std::endl;

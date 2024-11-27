@@ -1,0 +1,6 @@
+.obj
+*.o
+*.d
+BitcoinExchange
+RPN
+PmergeMe
