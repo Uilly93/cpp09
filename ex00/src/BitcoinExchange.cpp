@@ -92,6 +92,8 @@ std::map<Date, float> fill_data_base(std::string &path) {
 		// std::cout << num << std::endl;
 		map[date] = value;
 	}
+	if (map.empty())
+		throw std::invalid_argument("empty database");
 	return map;
 }
 
@@ -106,7 +108,7 @@ Date getDate(std::string &line) {
 	return date;
 }
 
-int getValue(std::string &line) {
+float getValue(std::string &line) {
 	std::string num = line.substr(line.find('|') + 1);
 	float value = std::strtold(num.c_str(), NULL);
 	return value;
@@ -161,6 +163,38 @@ int check_inputs(std::string line) {
 	return 0;
 }
 
+void compare_with_db(Date &date, float value, std::map<Date, float> db) {
+	std::map<Date, float>::iterator it = db.begin();
+	float multiplier = it->second;
+	while (it->first.year < date.year) { // multiplier = it->second;
+		if (it == db.end())
+			break;
+		multiplier = it->second;
+		it++;
+	}
+	if (it == db.end())
+		it = db.begin();
+	while (it->first.month < date.month) {
+		if (it == db.end())
+			break;
+		multiplier = it->second;
+		it++;
+	}
+	if (it == db.end())
+		it = db.begin();
+	while (it->first.day < date.day) {
+		if (it == db.end())
+			break;
+		multiplier = it->second;
+		it++;
+	}
+	// multiplier = it->second;
+	// if (it == db.end())
+	// 	multiplier = db.end().;
+	std::cout << date.year << "-" << date.month << "-" << date.day << " => " << value << " = "
+			  << value * multiplier << RESET << std::endl;
+}
+
 void parse_input(std::string &input, std::map<Date, float> db) {
 	(void)db;
 	std::ifstream file(input.c_str());
@@ -174,7 +208,6 @@ void parse_input(std::string &input, std::map<Date, float> db) {
 			continue;
 		Date date = getDate(line);
 		float value = getValue(line);
-		std::cout << date.year << "-" << date.month << "-" << date.day << " | " << value << RESET
-				  << std::endl;
+		compare_with_db(date, value, db);
 	}
 }
