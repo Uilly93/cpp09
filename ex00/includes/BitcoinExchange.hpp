@@ -1,11 +1,8 @@
 #ifndef BITCOIN_HPP
 #define BITCOIN_HPP
 
-#include "colors.hpp"
 #include <iostream>
 #include <map>
-#include <ostream>
-#include <vector>
 
 class Date {
 	public:

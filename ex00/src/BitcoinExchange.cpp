@@ -1,21 +1,12 @@
 #include "../includes/BitcoinExchange.hpp"
 #include "../includes/colors.hpp"
-#include <cstddef>
-#include <cstdio>
 #include <cstdlib>
-#include <exception>
 #include <fstream>
-#include <iomanip>
-#include <iostream>
-#include <istream>
 #include <map>
-#include <sstream>
-#include <stdexcept>
-#include <string>
 
 bool check_date_error(const Date &date);
 
-Date::Date() : year(0), month(0), day(0) {
+Date::Date() : year(-1), month(-1), day(-1) {
 }
 
 Date::Date(const std::string &dateStr) {
@@ -23,8 +14,6 @@ Date::Date(const std::string &dateStr) {
 		year = -1;
 		month = -1;
 		day = -1;
-		// std::string err = dateStr + ": invalid date format";
-		// throw std::invalid_argument(err);
 	} else {
 		int first_dash = dateStr.find('-');
 		int second_dash = dateStr.rfind('-');
@@ -76,25 +65,24 @@ std::map<Date, float> fill_data_base(std::string &path) {
 		}
 		std::size_t pos = line.find(',');
 		if (pos == std::string::npos) {
-			std::string err = line + ": no ',' found";
+			std::string err = line + ": no ',' found in database";
 			throw std::invalid_argument(err);
 		}
 		std::string str_date = line.substr(0, line.find(','));
 		std::string num = line.substr(line.find(',') + 1);
 		if (num == "")
-			throw std::invalid_argument("invalid DB value");
+			throw std::invalid_argument("invalid Database value");
 		Date date(str_date);
 		if (check_date_error(date))
-			throw std::invalid_argument("invalid DB date");
+			throw std::invalid_argument("invalid Database date");
 		char *ptr;
 		float value = std::strtold(num.c_str(), &ptr);
 		if (*ptr != 0)
-			throw std::invalid_argument("invalid DB value");
-		// std::cout << num << std::endl;
+			throw std::invalid_argument("invalid Database value");
 		map[date] = value;
 	}
 	if (map.empty())
-		throw std::invalid_argument("empty database");
+		throw std::invalid_argument("empty Database");
 	return map;
 }
 
@@ -218,9 +206,6 @@ void parse_input(std::string &input, std::map<Date, float> db) {
 			continue;
 		Date date = getDate(line);
 		float value = getValue(line);
-		// std::cout << date.year << "-" << date.month << "-" << date.day << " => " << value << " =
-		// "
-		// 		  << value << std::endl;
 		compare_with_db(date, value, db);
 	}
 }
