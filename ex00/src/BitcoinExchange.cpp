@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <exception>
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <istream>
 #include <map>
@@ -163,36 +164,45 @@ int check_inputs(std::string line) {
 	return 0;
 }
 
+bool is_date_superior(Date &date, std::map<Date, float>::iterator it) {
+	if (date.year > it->first.year) {
+		return true;
+	} else if (date.year == it->first.year) {
+		if (date.month > it->first.month) {
+			return true;
+		} else if (date.month == it->first.month) {
+			if (date.day >= it->first.day) {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 void compare_with_db(Date &date, float value, std::map<Date, float> db) {
+	if(db.empty()){
+		std::cerr << RED << "Database is empty" << std::endl;
+		return ;
+	}
 	std::map<Date, float>::iterator it = db.begin();
 	float multiplier = it->second;
-	while (it->first.year < date.year) { // multiplier = it->second;
-		if (it == db.end())
-			break;
-		multiplier = it->second;
-		it++;
+	if (!is_date_superior(date, it)) {
+		std::cerr << date.year << "-" << date.month << "-" << date.day << " => "
+				  << "date too old" << std::endl;
+		return;
 	}
-	if (it == db.end())
-		it = db.begin();
-	while (it->first.month < date.month) {
-		if (it == db.end())
-			break;
+	while (it != db.end() && is_date_superior(date, it)) {
 		multiplier = it->second;
-		it++;
+		++it;
 	}
-	if (it == db.end())
-		it = db.begin();
-	while (it->first.day < date.day) {
-		if (it == db.end())
-			break;
+	if (it->first.year == date.year && it->first.month == date.month && it->first.day == date.day)
 		multiplier = it->second;
-		it++;
+	else {
+		it--;
+		multiplier = it->second;
 	}
-	// multiplier = it->second;
-	// if (it == db.end())
-	// 	multiplier = db.end().;
 	std::cout << date.year << "-" << date.month << "-" << date.day << " => " << value << " = "
-			  << value * multiplier << RESET << std::endl;
+			  << value * multiplier << std::endl;
 }
 
 void parse_input(std::string &input, std::map<Date, float> db) {
@@ -208,6 +218,9 @@ void parse_input(std::string &input, std::map<Date, float> db) {
 			continue;
 		Date date = getDate(line);
 		float value = getValue(line);
+		// std::cout << date.year << "-" << date.month << "-" << date.day << " => " << value << " =
+		// "
+		// 		  << value << std::endl;
 		compare_with_db(date, value, db);
 	}
 }
