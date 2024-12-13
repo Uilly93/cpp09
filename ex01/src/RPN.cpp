@@ -15,10 +15,20 @@ int count_signs(std::string arg) {
 	return count;
 }
 
-std::stack<int> fill_stack(std::string arg) {
-	std::stack<int> stack;
+void check_terminated(std::string arg) {
+	for (size_t i = arg.size(); i > 0; i--) {
+		if (arg[i] == '*' || arg[i] == '/' || arg[i] == '+' || arg[i] == '-')
+			return;
+		if(std::isdigit(arg[i]))
+			throw std::invalid_argument("Error: argument terminated by digit");
+	}
+}
+
+std::stack<long> fill_stack(std::string arg) {
+	std::stack<long> stack;
 	size_t i = 0;
 	unsigned int signs = count_signs(arg);
+	check_terminated(arg);
 	for (; arg[i];) {
 		if (arg[i] == '*' || arg[i] == '/' || (arg[i] == '+' && !std::isdigit(arg[i + 1])) ||
 			(arg[i] == '-' && !std::isdigit(arg[i + 1])) || std::isspace(arg[i])) {
@@ -30,8 +40,8 @@ std::stack<int> fill_stack(std::string arg) {
 			continue;
 		}
 		char *end;
-		int value = std::strtold(arg.c_str() + i, &end);
-		// std::cout << value << std::endl;
+		long value = std::strtold(arg.c_str() + i, &end);
+		std::cout << value << std::endl;
 		stack.push(value);
 		i += end - (arg.c_str() + i);
 	}
@@ -42,35 +52,43 @@ std::stack<int> fill_stack(std::string arg) {
 	return stack;
 }
 
-size_t find_first_digit_from_end(const std::string &str) {
-	for (size_t i = str.length(); i > 0; --i) {
-		if (std::isdigit(str[i - 1])) {
-			return i - 1;
+size_t find_first_operator(const std::string &str) {
+	for (size_t i = 0; i < str.length(); ++i) {
+		if ((str[i] == '+' || str[i] == '-') && (i == 0 || !std::isdigit(str[i - 1])) &&
+			!std::isdigit(str[i + 1])) {
+			return i;
+		}
+		if (str[i] == '*' || str[i] == '/') {
+			return i;
 		}
 	}
 	return std::string::npos;
 }
 
-double calcules_loop(std::string arg, std::stack<int> stack) {
+long calcules_loop(std::string arg, std::stack<long> stack) {
 	int i = 0;
-	double res = stack.top();
-	size_t pos = find_first_digit_from_end(arg);
+	long res = stack.top();
+	stack.pop();
+	size_t pos = find_first_operator(arg);
 	if (pos == std::string::npos)
-		throw std::invalid_argument("no signs founded");
+		throw std::invalid_argument("no signs found");
 	std::string signs = arg.substr(pos);
+	std::cout << signs << std::endl;
 	while (signs[i]) {
-		while (signs[i] && signs[i] != '+' && signs[i] != '-' && signs[i] != '/' && signs[i] != '*')
+		while (signs[i] != '+' && signs[i] != '-' && signs[i] != '/' && signs[i] != '*')
 			i++;
-		stack.pop();
-		double tmp = stack.top();
 		if (signs[i] == '+')
-			res = tmp + res;
+			res = stack.top() + res;
 		if (signs[i] == '-')
-			res = tmp - res;
+			res = stack.top() - res;
 		if (signs[i] == '*')
-			res = tmp * res;
-		if (signs[i] == '/')
-			res = tmp / res;
+			res = stack.top() * res;
+		if (signs[i] == '/') {
+			if (res == 0)
+				throw std::invalid_argument("division by 0 detected");
+			res = stack.top() / res;
+		}
+		stack.pop();
 		i++;
 	}
 	return res;
