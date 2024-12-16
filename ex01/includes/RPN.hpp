@@ -5,8 +5,6 @@
 #include "colors.hpp"
 #include <stack>
 
-std::stack<long> fill_stack(std::string arg);
-long calcules_loop(std::string arg, std::stack<long> stack);
-long RPN(std::string arg);
+long RPN(std::string &arg);
 
 #endif
