@@ -31,7 +31,6 @@ void check_format(std::string &arg) {
 	std::stack<long> stack;
 	size_t i = 0;
 	unsigned int signs = count_signs(arg);
-	// check_terminated(arg);
 	for (; arg[i];) {
 		if (arg[i] == '*' || arg[i] == '/' || (arg[i] == '+' && !std::isdigit(arg[i + 1])) ||
 			(arg[i] == '-' && !std::isdigit(arg[i + 1])) || std::isspace(arg[i])) {
@@ -66,20 +65,36 @@ int RPN(std::string &arg) {
 			if (stack.size() > 1 &&
 				(arg[i] == '+' || arg[i] == '-' || arg[i] == '/' || arg[i] == '*')) {
 				int last_top = stack.top();
+				if (last_top < std::numeric_limits<int>::min() ||
+					last_top > std::numeric_limits<int>::max())
+					throw std::invalid_argument("number overflow");
 				stack.pop();
-				std::cout << last_top << ", " << stack.top() << std::endl;
-				if (arg[i] == '+')
+				if (arg[i] == '+') {
+					if (stack.top() + last_top < std::numeric_limits<int>::min() ||
+						stack.top() + last_top > std::numeric_limits<int>::max())
+						throw std::invalid_argument("number overflow");
 					res = stack.top() + last_top;
-				if (arg[i] == '-')
+				}
+				if (arg[i] == '-') {
+					if (stack.top() - last_top < std::numeric_limits<int>::min() ||
+						stack.top() - last_top > std::numeric_limits<int>::max())
+						throw std::invalid_argument("number overflow");
 					res = stack.top() - last_top;
-				if (arg[i] == '*')
+				}
+				if (arg[i] == '*') {
+					if (stack.top() * last_top < std::numeric_limits<int>::min() ||
+						stack.top() * last_top > std::numeric_limits<int>::max())
+						throw std::invalid_argument("number overflow");
 					res = stack.top() * last_top;
+				}
 				if (arg[i] == '/') {
 					if (last_top == 0)
 						throw std::invalid_argument("division by 0 detected");
 					res = stack.top() / last_top;
 				}
 				stack.pop();
+				if (res < std::numeric_limits<int>::min() || res > std::numeric_limits<int>::max())
+					throw std::invalid_argument("number overflow");
 				stack.push(res);
 			}
 			i++;
