@@ -7,5 +7,6 @@
 
 std::stack<long> fill_stack(std::string arg);
 long calcules_loop(std::string arg, std::stack<long> stack);
+void RPN(std::string arg);
 
 #endif

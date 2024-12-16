@@ -26,11 +26,12 @@ int main(int ac, char **av) {
 			std::cerr << "Error: incorrect input" << std::endl;
 			return 1;
 		}
-		std::stack<long> stack;
-		stack = fill_stack(arg);
+		RPN(arg);
+		// std::stack<long> stack;
+		// stack = fill_stack(arg);
 		// std::cout << "stack filled" << std::endl;
-		long res = calcules_loop(arg, stack);
-		std::cout << std::fixed << std::setprecision(2) << "result is: " << res << std::endl;
+		// long res = calcules_loop(arg, stack);
+		// std::cout << std::fixed << std::setprecision(2) << "result is: " << res << std::endl;
 	} catch (std::exception &e) {
 		std::cout << e.what() << std::endl;
 	}
