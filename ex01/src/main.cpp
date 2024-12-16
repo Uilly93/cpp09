@@ -1,18 +1,5 @@
 #include "../includes/RPN.hpp"
-#include <cctype>
-#include <exception>
 #include <iostream>
-#include <iomanip>
-#include <stack>
-
-int check_input(std::string &av) {
-	for (int i = 0; av[i]; i++) {
-		if (!std::isdigit(av[i]) && av[i] != '+' && av[i] != '-' && av[i] != '*' && av[i] != '/' &&
-			!std::isspace(av[i]))
-			return 1;
-	}
-	return 0;
-}
 
 int main(int ac, char **av) {
 	try {

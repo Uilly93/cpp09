@@ -1,12 +1,16 @@
-#include <cctype>
-#include <climits>
 #include <cstdlib>
-#include <iomanip>
-#include <iostream>
+#include "../includes/RPN.hpp"
 #include <limits>
 #include <stack>
-#include <stdexcept>
-#include <string>
+
+int check_input(std::string &av) {
+	for (int i = 0; av[i]; i++) {
+		if (!std::isdigit(av[i]) && av[i] != '+' && av[i] != '-' && av[i] != '*' && av[i] != '/' &&
+			!std::isspace(av[i]))
+			return 1;
+	}
+	return 0;
+}
 
 int count_signs(std::string &arg) {
 	int count = 0;
@@ -53,7 +57,7 @@ void check_format(std::string &arg) {
 	check_terminated(arg);
 }
 
-int RPN(std::string &arg) {
+long RPN(std::string &arg) {
 	std::stack<long> stack;
 	long res;
 	check_format(arg);
@@ -69,24 +73,12 @@ int RPN(std::string &arg) {
 					last_top > std::numeric_limits<int>::max())
 					throw std::invalid_argument("number overflow");
 				stack.pop();
-				if (arg[i] == '+') {
-					if (stack.top() + last_top < std::numeric_limits<int>::min() ||
-						stack.top() + last_top > std::numeric_limits<int>::max())
-						throw std::invalid_argument("number overflow");
+				if (arg[i] == '+')
 					res = stack.top() + last_top;
-				}
-				if (arg[i] == '-') {
-					if (stack.top() - last_top < std::numeric_limits<int>::min() ||
-						stack.top() - last_top > std::numeric_limits<int>::max())
-						throw std::invalid_argument("number overflow");
+				if (arg[i] == '-')
 					res = stack.top() - last_top;
-				}
-				if (arg[i] == '*') {
-					if (stack.top() * last_top < std::numeric_limits<int>::min() ||
-						stack.top() * last_top > std::numeric_limits<int>::max())
-						throw std::invalid_argument("number overflow");
+				if (arg[i] == '*')
 					res = stack.top() * last_top;
-				}
 				if (arg[i] == '/') {
 					if (last_top == 0)
 						throw std::invalid_argument("division by 0 detected");
