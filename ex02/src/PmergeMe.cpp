@@ -19,17 +19,13 @@ std::vector<int> fill_stack(int ac, char **av) {
   return stack;
 }
 
-void recursive_sort(std::vector<std::pair<int, int> >::iterator it,
-                    std::vector<std::pair<int, int> >::iterator end) {
-  if (it->second > it->first)
-    std::swap(it->second, it->first);
-  if (it != end)
-    recursive_sort(it + 1, end);
-}
 
 void sort_pairs(std::vector<std::pair<int, int> > &pairs) {
-  std::vector<std::pair<int, int> >::iterator it = pairs.begin();
-  recursive_sort(it, pairs.end());
+	std::vector<std::pair<int, int> >::iterator it = pairs.begin();
+	for (; it != pairs.end(); it++) {
+		if (it->second > it->first)
+			std::swap(it->second, it->first);
+	}
 }
 
 std::vector<std::pair<int, int> > create_pairs(std::vector<int> &stack) {
@@ -43,3 +39,11 @@ std::vector<std::pair<int, int> > create_pairs(std::vector<int> &stack) {
   sort_pairs(pairs);
   return pairs;
 }
+
+// void merge(std::vector<int> &stack, int left, int mid, int end) {
+//   int n1 = mid - left + 1;
+//   int n2 = end - mid;
+
+//   std::vector<std::pair<int, int> > lside(n1);
+//   std::vector<std::pair<int, int> > rside(n2);
+// }
