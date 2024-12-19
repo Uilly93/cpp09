@@ -192,12 +192,8 @@ T PmergeMe(T &stack, T &final) {
 	P pairs;
 	create_pairs(stack, pairs);
 	merge_sort(pairs, 0, pairs.size() - 1);
-	// std::cout << "---" << std::endl;
-	// for (typename P::iterator it = pairs.begin(); it != pairs.end(); it++)
-	// 	std::cout << it->first << " " << it->second << std::endl;
 	T jacobsthalArray(stack.size());
 	fill_jacobsthal_array(jacobsthalArray);
-	// T final;
 	final_stack(pairs, final);
 	if (stack.size() % 2 != 0)
 		final.insert(final.begin() + binary_search(final, *stack.rbegin()), *stack.rbegin());
