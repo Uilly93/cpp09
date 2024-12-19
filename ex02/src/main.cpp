@@ -1,75 +1,43 @@
 #include "../includes/PmergeMe.hpp"
+#include <algorithm>
+#include <deque>
 #include <exception>
 #include <iostream>
 #include <vector>
 
 int main(int ac, char **av) {
-  try {
-	if(ac < 3){
-		std::cerr << "Error: you need at least 2 numbers" << std::endl;
-		return 1;
+	try {
+		if (ac < 3) {
+			std::cerr << "Error: you need at least 2 numbers" << std::endl;
+			return 1;
+		}
+		{
+			std::cout << "--- PmergeMe with vector Array ---" << std::endl;
+			std::vector<int> vec;
+			fill_stack<std::vector<int> >(ac, av, vec);
+			std::vector<int> vector_sorted(vec.size());
+			PmergeMe<std::vector<int>, std::vector<std::pair<int, int> > >(vec, vector_sorted);
+			if (std::is_sorted(vector_sorted.begin(), vector_sorted.end()))
+				std::cout << "vector array is sorted" << std::endl;
+			else
+				std::cout << "vector array is NOT sorted" << std::endl;
+		}
+		{
+			std::cout << "--- PmergeMe with deque Array ---" << std::endl;
+			std::deque<int> deq;
+			fill_stack<std::deque<int> >(ac, av, deq);
+			// for(std::deque<int>::iterator it = deq.begin(); it != deq.end(); it++)
+			// 	std::cout << *it << std::endl;
+			std::deque<int> deque_sorted;
+			PmergeMe<std::deque<int>, std::deque<std::pair<int, int> > >(deq, deque_sorted);
+			// for(std::deque<int>::iterator it = deque_sorted.begin(); it != deque_sorted.end(); it++)
+			// 	std::cout << *it << std::endl;
+			// if (std::is_sorted(deque_sorted.begin(), deque_sorted.end())) // cant compile in cpp98
+			// 	std::cout << "deque array is sorted" << std::endl;
+			// else
+			// 	std::cout << "deque array is NOT sorted" << std::endl;
+		}
+	} catch (std::exception &e) {
+		std::cout << e.what() << std::endl;
 	}
-
-	// start count time;
-    std::vector<int> stack = fill_stack(ac, av);
-	std::vector<std::pair<int, int> > pairs = create_pairs(stack);
-	// for(std::vector<std::pair<int, int> >::iterator it = pairs.begin(); it != pairs.end(); it++){
-	// 	std::cout << it->first << " " << it->second << std::endl;
-	// }
-
-    merge_sort(pairs, 0, pairs.size() - 1);
-	std::cout << "--------------------------------------------------------------" << std::endl;
-	for(std::vector<std::pair<int, int> >::iterator it = pairs.begin(); it != pairs.end(); it++){
-		std::cout << it->first << " " << it->second << std::endl;
-	}
-	std::cout << "--------------------------------------------------------------" << std::endl;
-	std::vector<int> jacobsthalArray(stack.size() / 2);
-    fill_jacobsthal_array(jacobsthalArray);
-    // for (size_t i = 0; i < stack.size() / 2; i++) {
-    //     std::cout << "J[" << i << "] = " << jacobsthalArray[i] << std::endl;
-    // }
-	std::vector<int> final = final_stack(pairs);
-	insert_jacobsthal(jacobsthalArray, pairs, final);
-	for (size_t i = 0; i < final.size(); i++) {
-        std::cout << "[" << i << "] = " << final[i] << std::endl;
-    }
-  } catch (std::exception &e) {
-	std::cout << e.what() << std::endl;
-  }
 }
-// int main(int ac, char **av) {
-//   try {
-//     if (ac < 3) {
-//       std::cerr << "Error: you need at least 2 numbers" << std::endl;
-//       return 1;
-//     }
-
-//     // Remplir le vecteur avec les arguments de la ligne de commande
-//     std::vector<int> stack = fill_stack(ac, av);
-
-//     // Créer des paires à partir du vecteur
-//     std::vector<std::pair<int, int> > pairs = create_pairs(stack);
-
-//     // Afficher les paires
-//     std::cout << "Pairs:" << std::endl;
-//     for (std::vector<std::pair<int, int> >::iterator it = pairs.begin(); it != pairs.end(); ++it) {
-//       std::cout << "(" << it->first << ", " << it->second << ")" << std::endl;
-//     }
-
-//     // Trier le vecteur en utilisant merge sort
-//     merge_sort(pairs, 0, pairs.size() - 1);
-
-//     // Afficher le vecteur trié
-//     std::cout << "Sorted stack:" << std::endl;
-//     for (std::vector<int>::iterator it = stack.begin(); it != stack.end(); ++it) {
-//       std::cout << *it << " ";
-//     }
-//     std::cout << std::endl;
-
-//   } catch (std::exception &e) {
-//     std::cerr << "Exception: " << e.what() << std::endl;
-//     return 1;
-//   }
-
-//   return 0;
-// }
