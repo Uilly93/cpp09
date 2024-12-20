@@ -24,6 +24,8 @@ template <typename T>
 T fill_stack(int ac, char **av, T &stack) {
 	for (int i = 1; i < ac; i++) {
 		char *end;
+		if (*av[i] == 0)
+			throw std::invalid_argument("invalid number found");
 		int value = std::strtold(av[i], &end);
 		if (*end != 0)
 			throw std::invalid_argument("invalid number found");
