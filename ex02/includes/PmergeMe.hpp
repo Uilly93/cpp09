@@ -46,7 +46,6 @@ void sort_pairs(P &pairs) {
 
 template <typename T, typename P>
 P create_pairs(T &stack, P &pairs) {
-	// P pairs;
 	for (typename T::iterator it = stack.begin(); it != stack.end(); it++) {
 		if (it + 1 != stack.end()) {
 			if (*it > *(it + 1))
@@ -111,7 +110,6 @@ void merge_sort(P &pairs, int left, int right) {
 
 template <typename T, typename P>
 T final_stack(P &pairs, T &final) {
-	// T final;
 	for (size_t i = 0; i < pairs.size(); i++) {
 		final.push_back(pairs[i].first);
 	}
@@ -131,45 +129,17 @@ void fill_jacobsthal_array(T &jacobsthalArray) {
 	}
 }
 
-template <typename T>
-bool compare_with_jacobsthal(T &jacobsthalArray, int vec_index) {
-	for (size_t i = 0; i < jacobsthalArray.size(); i++) {
-		if (vec_index == jacobsthalArray[i])
-			return true;
-	}
-	return (false);
-}
-
-template <typename T>
-int binary_search(const T &final, int value) {
-	int left = 0;
-	int right = final.size() - 1;
-	while (left <= right) {
-		int mid = left + (right - left) / 2;
-		if (final[mid] == value)
-			return mid;
-		if (final[mid] < value)
-			left = mid + 1;
-		else
-			right = mid - 1;
-	}
-	return left;
-}
-
 template <typename T, typename P>
 void jacobsthal_insert(T &jacobsthalArray, P &pairs, T &final) {
 	size_t j_index = 0;
 	size_t vec_index = 0;
-	int insert_pos;
 
 	while (vec_index < pairs.size() && j_index < jacobsthalArray.size() &&
 		   (size_t)jacobsthalArray[j_index] < pairs.size()) {
-		insert_pos = binary_search(final, pairs[jacobsthalArray[j_index]].second);
 		final.insert(
 			std::lower_bound(final.begin(), final.end(), pairs[jacobsthalArray[j_index]].second),
 			pairs[jacobsthalArray[j_index]].second);
 		while (vec_index < (size_t)jacobsthalArray[j_index]) {
-			insert_pos = binary_search(final, pairs[vec_index].second);
 			final.insert(std::lower_bound(final.begin(), final.end(), pairs[vec_index].second),
 						 pairs[vec_index].second);
 			vec_index++;
@@ -178,11 +148,8 @@ void jacobsthal_insert(T &jacobsthalArray, P &pairs, T &final) {
 		j_index++;
 	}
 	while (vec_index < pairs.size()) {
-		insert_pos = binary_search(final, pairs[vec_index].second);
-		if ((size_t)insert_pos <= final.size()) {
-			final.insert(std::lower_bound(final.begin(), final.end(), pairs[vec_index].second),
-						 pairs[vec_index].second);
-		}
+		final.insert(std::lower_bound(final.begin(), final.end(), pairs[vec_index].second),
+					 pairs[vec_index].second);
 		vec_index++;
 	}
 }
@@ -196,19 +163,10 @@ T PmergeMe(T &stack, T &final) {
 	fill_jacobsthal_array(jacobsthalArray);
 	final_stack(pairs, final);
 	if (stack.size() % 2 != 0)
-		final.insert(final.begin() + binary_search(final, *stack.rbegin()), *stack.rbegin());
+		final.insert(std::lower_bound(final.begin(), final.end(), *stack.rbegin()),
+					 *stack.rbegin());
 	jacobsthal_insert(jacobsthalArray, pairs, final);
 	return final;
 }
-// T fill_stack(int ac, char **av);
-// // std::vector<std::pair<int, int> > create_pairs(std::vector<int> &stack);
-// // void merge_sort(std::vector<std::pair<int, int> > &pairs, int left, int right);
-// // void fill_jacobsthal_array(std::vector<int> &jacobsthalArray);
-// // std::vector<int> final_stack(std::vector<std::pair<int, int> > &pairs);
-// // void jacobsthal_insert(std::vector<int> &jacobsthalArray, std::vector<std::pair<int, int> >
-// &pairs,
-// // 					   std::vector<int> &final);
-// // int binary_search(const std::vector<int> &final, int value);
-// T PmergeMe_vector(std::vector<int> &stack);
 
 #endif
